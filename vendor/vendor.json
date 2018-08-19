@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "yfEYjkP2xB8f09Wk3cYeeYg/9Jg=",
+			"path": "github.com/steakknife/hamming",
+			"revision": "5ac3f73b8842df21423978fbbeb5166670f6f73e",
+			"revisionTime": "2016-10-12T05:18:58Z"
+		}
+	],
+	"rootPath": "github.com/juandes/knn-recommender-system"
+}
