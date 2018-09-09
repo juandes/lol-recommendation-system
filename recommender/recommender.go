@@ -7,13 +7,18 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/juandes/knn-recommender-system/distances"
+	vm "github.com/juandes/knn-recommender-system/vectormath"
 )
 
 type NeighborhoodBasedRecommender struct {
 	data        [][]float64
 	neighbors   int
 	numberItems int
+}
+
+type Slice struct {
+	sort.Interface
+	idx []int
 }
 
 // NewNeighborhoodBasedRecommender creates a new NeighborhoodBasedRecommender object
@@ -30,8 +35,8 @@ func NewNeighborhoodBasedRecommender(data [][]float64, neighbors int) *Neighborh
 }
 
 // Recommend recommends the n number of items that are closer to a given vector using a given distance measure
-func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRecommend int, distanceMeasure distances.Distance, shuffle bool) ([]Recommendation, error) {
-	recommendations, err := nbr.findKNearestNeighbors(items, numItemsToRecommend, distanceMeasure, shuffle)
+func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRecommend int, distanceMeasure vm.Distance, shuffle bool, serendipitous bool) ([]Recommendation, error) {
+	recommendations, err := nbr.findKNearestNeighbors(items, numItemsToRecommend, distanceMeasure, shuffle, serendipitous)
 	if err != nil {
 		return nil, fmt.Errorf("Error encountered while finding K nearest neighbors: %v", err)
 	}
@@ -39,11 +44,12 @@ func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRe
 	return recommendations, nil
 }
 
-func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, n int, distanceMeasure distances.Distance, shuffle bool) ([]Recommendation, error) {
+func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, n int, distanceMeasure vm.Distance, shuffle bool, serendipitous bool) ([]Recommendation, error) {
 	var (
 		d                 float64
 		err               error
 		distancesFromUser []Recommendation
+		recommendations   []Recommendation
 		order             []int
 	)
 
@@ -69,8 +75,8 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		}
 
 		switch distanceMeasure {
-		case distances.Euclidean:
-			d, err = distances.EuclideanDistance(items, user)
+		case vm.Euclidean:
+			d, err = vm.EuclideanDistance(items, user)
 		default:
 			return nil, fmt.Errorf("Invalid distance measure: %v", distanceMeasure)
 		}
@@ -89,6 +95,36 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 
 	// sort the recommendations by distance from the given vector
 	sort.Slice(distancesFromUser, func(i, j int) bool { return distancesFromUser[i].d < distancesFromUser[j].d })
+	recommendations = distancesFromUser[:n]
 
-	return distancesFromUser[:n], nil
+	// The idea here is the following:
+	// 1. Get the n:n*2 neighbors
+	// 2. Build a map where the keys are the champions found on those neighbors
+	//    and value is the count of them.
+	// 3. Sort the map by its value
+	// 4. Use the 5 champions with the highest count as a recommendation
+	if serendipitous {
+		sereOptions := make([]int, len(nbr.data))
+		for _, dist := range distancesFromUser[n : n*2] {
+			for j := range dist.items {
+				sereOptions[j]++
+			}
+		}
+		//log.Printf("sereOptions: %v", len(sereOptions))
+		s := NewIntSlice(sereOptions)
+		sort.Sort(s)
+		//log.Printf("sere: %v", s.idx[1:5])
+	}
+
+	return recommendations, nil
 }
+
+func NewSlice(n sort.Interface) *Slice {
+	s := &Slice{Interface: n, idx: make([]int, n.Len())}
+	for i := range s.idx {
+		s.idx[i] = i
+	}
+	return s
+}
+
+func NewIntSlice(n []int) *Slice { return NewSlice(sort.IntSlice(n)) }

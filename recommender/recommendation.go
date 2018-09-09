@@ -3,14 +3,14 @@ package recommender
 import (
 	"fmt"
 
-	"github.com/juandes/knn-recommender-system/distances"
+	vm "github.com/juandes/knn-recommender-system/vectormath"
 )
 
 type Recommendation struct {
 	index    int
 	items    []float64
 	d        float64
-	distance distances.Distance
+	distance vm.Distance
 }
 
 func (r *Recommendation) String() string {
