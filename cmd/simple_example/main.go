@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/juandes/knn-recommender-system/distances"
 	"github.com/juandes/knn-recommender-system/recommender"
+	vm "github.com/juandes/knn-recommender-system/vectormath"
 )
 
 func main() {
@@ -15,12 +15,12 @@ func main() {
 	data := [][]float64{
 		[]float64{1.0, 1.0, 1.0, 0.0, 1.0, 0.0},
 		[]float64{1.0, 1.0, 0.0, 0.0, 1.0, 0.0},
-		[]float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+		//[]float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 		[]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
 	}
 
 	reco := recommender.NewNeighborhoodBasedRecommender(data, 1)
-	recommendations, err := reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1, distances.Euclidean)
+	recommendations, err := reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1, vm.Pearson, false, false)
 	if err != nil {
 		log.Fatalf("Error while recommending: %v", err)
 		return
