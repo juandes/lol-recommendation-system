@@ -2,6 +2,7 @@ package recommender
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"sort"
 	"time"
@@ -22,21 +23,22 @@ type Slice struct {
 }
 
 // NewNeighborhoodBasedRecommender creates a new NeighborhoodBasedRecommender object
-func NewNeighborhoodBasedRecommender(data [][]float64, neighbors int) *NeighborhoodBasedRecommender {
+func NewNeighborhoodBasedRecommender(data [][]float64, k int) *NeighborhoodBasedRecommender {
 	if len(data) == 0 {
 		log.Fatalf("Dataset is empty")
 	}
 
 	return &NeighborhoodBasedRecommender{
 		data:        data,
-		neighbors:   neighbors,
+		neighbors:   k,
 		numberItems: len(data[0]),
 	}
 }
 
 // Recommend recommends the n number of items that are closer to a given vector using a given distance measure
 func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRecommend int, distanceMeasure vm.Distance, shuffle bool, serendipitous bool) ([]Recommendation, error) {
-	recommendations, err := nbr.findKNearestNeighbors(items, numItemsToRecommend, distanceMeasure, shuffle, serendipitous)
+	// TODO (Juan): If vector is a zero vector, it should return
+	recommendations, err := nbr.findKNearestNeighbors(items, distanceMeasure, shuffle, serendipitous)
 	if err != nil {
 		return nil, fmt.Errorf("Error encountered while finding K nearest neighbors: %v", err)
 	}
@@ -44,7 +46,7 @@ func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRe
 	return recommendations, nil
 }
 
-func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, n int, distanceMeasure vm.Distance, shuffle bool, serendipitous bool) ([]Recommendation, error) {
+func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, distanceMeasure vm.Distance, shuffle bool, serendipitous bool) ([]Recommendation, error) {
 	var (
 		d                 float64
 		err               error
@@ -53,6 +55,10 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		order             []int
 	)
 
+	// order is an array where the values are
+	// 1 ...n where n is the number of rows
+	// in the training dataset.
+	// It is the equivalent of Python's range(len(nbr.data))
 	order = make([]int, len(nbr.data))
 	for i := range order {
 		order[i] = i
@@ -83,6 +89,11 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 			d, err = vm.ManhattanDistance(items, user)
 		case vm.Pearson:
 			d, err = vm.PearsonCorrelation(items, user)
+			// The Pearson correlation coefficient lies between -1 and 1,
+			// however I want the score to be from 0 and 1, where
+			// 0 represents perfect correlation regardless of whether
+			// it is a positive or negative one
+			d = 1 - math.Abs(d)
 		default:
 			return nil, fmt.Errorf("Invalid distance measure: %v", distanceMeasure)
 		}
@@ -99,9 +110,9 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		})
 	}
 
-	// sort the recommendations by distance from the given vector
+	// sort the recommendations (ascending order) by distance from the given vector
 	sort.Slice(distancesFromUser, func(i, j int) bool { return distancesFromUser[i].d < distancesFromUser[j].d })
-	recommendations = distancesFromUser[:n]
+	recommendations = distancesFromUser[:nbr.neighbors]
 
 	// The idea here is the following:
 	// 1. Get the n:n*2 neighbors
@@ -111,7 +122,7 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	// 4. Use the 5 champions with the highest count as a recommendation
 	if serendipitous {
 		sereOptions := make([]int, len(recommendations[0].items))
-		for _, dist := range distancesFromUser[n : n*2] {
+		for _, dist := range distancesFromUser[nbr.neighbors : nbr.neighbors*2] {
 			for j := range dist.items {
 				sereOptions[j]++
 			}

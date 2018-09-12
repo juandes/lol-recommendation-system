@@ -55,16 +55,12 @@ func CosineSimilarity(x []float64, y []float64) (float64, error) {
 	return float64((dot)) / (vectorEuclideanNorm(x) * vectorEuclideanNorm(y)), nil
 }
 
-func PearsonCorrelation(x, y []float64) (float64, error) {
-	if len(x) != len(y) {
-		return 0, fmt.Errorf("different slice sizes len(x): %v, len(y): %v", len(x), len(y))
+func PearsonCorrelation(a, b []float64) (float64, error) {
+	if len(a) != len(b) {
+		return 0, fmt.Errorf("different slice sizes len(a): %v, len(b): %v", len(a), len(b))
 	}
 
-	// The Pearson correlation coefficient lies between -1 and 1,
-	// however I want the score to be from 0 and 1, where
-	// 0 represents perfect correlation regardless of whether
-	// it is a positive or negative one
-	return 1 - math.Abs(onlinestats.Pearson(x, y)), nil
+	return onlinestats.Pearson(a, b), nil
 }
 
 // VectorEuclideanNorm calculates the euclidean norm (also known as magnitude or length)
