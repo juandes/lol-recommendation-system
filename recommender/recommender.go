@@ -2,6 +2,7 @@ package recommender
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"sort"
 	"time"
@@ -77,6 +78,12 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		switch distanceMeasure {
 		case vm.Euclidean:
 			d, err = vm.EuclideanDistance(items, user)
+		case vm.Cosine:
+			d, err = vm.CosineSimilarity(items, user)
+		case vm.Manhattan:
+			d, err = vm.ManhattanDistance(items, user)
+		case vm.Pearson:
+			d, err = vm.PearsonCorrelation(items, user)
 		default:
 			return nil, fmt.Errorf("Invalid distance measure: %v", distanceMeasure)
 		}
@@ -104,7 +111,13 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	// 3. Sort the map by its value
 	// 4. Use the 5 champions with the highest count as a recommendation
 	if serendipitous {
-		sereOptions := make([]int, len(nbr.data))
+		sereOptions := make([]int, len(recommendations[0].items))
+		for _, dist := range distancesFromUser[n : n*2] {
+			for j := range dist.items {
+				sereOptions[j]++
+			}
+		}
+		/*sereOptions := make([]int, len(nbr.data))
 		for _, dist := range distancesFromUser[n : n*2] {
 			for j := range dist.items {
 				sereOptions[j]++
@@ -113,7 +126,7 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		//log.Printf("sereOptions: %v", len(sereOptions))
 		s := NewIntSlice(sereOptions)
 		sort.Sort(s)
-		//log.Printf("sere: %v", s.idx[1:5])
+		//log.Printf("sere: %v", s.idx[1:5])*/
 	}
 
 	return recommendations, nil

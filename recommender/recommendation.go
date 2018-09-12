@@ -16,3 +16,7 @@ type Recommendation struct {
 func (r *Recommendation) String() string {
 	return fmt.Sprintf("Items: %v\nIndex: %d\nDistance (%v): %f", r.items, r.index, r.distance, r.d)
 }
+
+func (r *Recommendation) DistanceScore() float64 {
+	return r.d
+}
