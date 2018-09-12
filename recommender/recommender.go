@@ -2,7 +2,6 @@ package recommender
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"sort"
 	"time"
