@@ -15,6 +15,12 @@
 			"revisionTime": "2017-06-12T11:18:26Z"
 		},
 		{
+			"checksumSHA1": "dbumT8FTwKpuQZeVN9wbyN0Oh+Y=",
+			"path": "github.com/juliangruber/go-intersect",
+			"revision": "b60b3a5b35ade098834e63cf9e094108650641a2",
+			"revisionTime": "2014-07-29T10:57:34Z"
+		},
+		{
 			"checksumSHA1": "yfEYjkP2xB8f09Wk3cYeeYg/9Jg=",
 			"path": "github.com/steakknife/hamming",
 			"revision": "5ac3f73b8842df21423978fbbeb5166670f6f73e",

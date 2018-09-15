@@ -20,13 +20,25 @@ func main() {
 	}
 
 	reco := recommender.NewNeighborhoodBasedRecommender(data, 1)
-	recommendations, err := reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1, vm.Pearson, false, false)
+	recommendations, err := reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1, vm.Pearson, false, false, false)
 	if err != nil {
 		log.Fatalf("Error while recommending: %v", err)
 		return
 	}
 
-	fmt.Printf("Recommended items: %v", recommendations)
+	//fmt.Printf("Recommended items: %v", recommendations)
+	fmt.Printf("Recommended items\n")
+	for _, recommendation := range recommendations {
+		fmt.Printf(recommendation.String())
+	}
+
+	recommendations, err = reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 4, vm.Pearson, true, false, false)
+	if err != nil {
+		log.Fatalf("Error while recommending: %v", err)
+		return
+	}
+
+	//fmt.Printf("Recommended items: %v", recommendations)
 	fmt.Printf("Recommended items\n")
 	for _, recommendation := range recommendations {
 		fmt.Printf(recommendation.String())

@@ -2,6 +2,7 @@ package recommender
 
 import (
 	"fmt"
+	"github.com/juandes/knn-recommender-system/vectormath"
 	"math"
 	"math/rand"
 	"sort"
@@ -36,9 +37,9 @@ func NewNeighborhoodBasedRecommender(data [][]float64, k int) *NeighborhoodBased
 }
 
 // Recommend recommends the n number of items that are closer to a given vector using a given distance measure
-func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRecommend int, distanceMeasure vm.Distance, shuffle bool, serendipitous bool) ([]Recommendation, error) {
+func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRecommend int, distanceMeasure vm.Distance, intercept, shuffle, serendipitous bool) ([]Recommendation, error) {
 	// TODO (Juan): If vector is a zero vector, it should return
-	recommendations, err := nbr.findKNearestNeighbors(items, distanceMeasure, shuffle, serendipitous)
+	recommendations, err := nbr.findKNearestNeighbors(items, distanceMeasure, intercept, shuffle, serendipitous)
 	if err != nil {
 		return nil, fmt.Errorf("Error encountered while finding K nearest neighbors: %v", err)
 	}
@@ -46,7 +47,7 @@ func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRe
 	return recommendations, nil
 }
 
-func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, distanceMeasure vm.Distance, shuffle bool, serendipitous bool) ([]Recommendation, error) {
+func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, distanceMeasure vm.Distance, intercept, shuffle, serendipitous bool) ([]Recommendation, error) {
 	var (
 		d                 float64
 		err               error
@@ -102,7 +103,7 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 			return nil, fmt.Errorf("Error calculating distance: %v", err)
 		}
 
-		distancesFromUser = append(distancesFromUser, Recommendation{
+		distancesFromUser = append(distancesFromUser, MultipleRecommendation{
 			index:    i,
 			items:    user,
 			d:        d,
@@ -111,7 +112,9 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	}
 
 	// sort the recommendations (ascending order) by distance from the given vector
-	sort.Slice(distancesFromUser, func(i, j int) bool { return distancesFromUser[i].d < distancesFromUser[j].d })
+	sort.Slice(distancesFromUser, func(i, j int) bool {
+		return distancesFromUser[i].Distance() < distancesFromUser[j].Distance()
+	})
 	recommendations = distancesFromUser[:nbr.neighbors]
 
 	// The idea here is the following:
@@ -121,9 +124,9 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	// 3. Sort the map by its value
 	// 4. Use the 5 champions with the highest count as a recommendation
 	if serendipitous {
-		sereOptions := make([]int, len(recommendations[0].items))
+		sereOptions := make([]int, len(recommendations[0].Items()))
 		for _, dist := range distancesFromUser[nbr.neighbors : nbr.neighbors*2] {
-			for j := range dist.items {
+			for j := range dist.Items() {
 				sereOptions[j]++
 			}
 		}
@@ -139,6 +142,23 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		//log.Printf("sere: %v", s.idx[1:5])*/
 	}
 
+	if intercept {
+		intercepts := recommendations[0].Items()
+		for _, val := range recommendations[1:len(recommendations)] {
+			intercepts, err = vectormath.SetIntercept(intercepts, val.Items())
+			if err != nil {
+				return nil, fmt.Errorf("Error calculating set intercept: %v", err)
+			}
+		}
+
+		recommendations = []Recommendation{
+			&SimpleRecommendation{
+				item:     intercepts,
+				distance: distanceMeasure,
+			},
+		}
+
+	}
 	return recommendations, nil
 }
 
