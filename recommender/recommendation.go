@@ -24,6 +24,11 @@ type SimpleRecommendation struct {
 	distance vm.Distance
 }
 
+type SerendipitousRecommendation struct {
+	item     []float64
+	distance vm.Distance
+}
+
 func (r MultipleRecommendation) String() string {
 	return fmt.Sprintf("Items: %v\nIndex: %d\nDistance (%v): %f\n", r.items, r.index, r.distance, r.d)
 }
@@ -45,5 +50,17 @@ func (r SimpleRecommendation) Distance() float64 {
 }
 
 func (r SimpleRecommendation) Items() []float64 {
+	return r.item
+}
+
+func (r SerendipitousRecommendation) String() string {
+	return fmt.Sprintf("Serendipitous recommendation items: %v\nDistance used: %v\n", r.item, r.distance)
+}
+
+func (r SerendipitousRecommendation) Distance() float64 {
+	return 0.0
+}
+
+func (r SerendipitousRecommendation) Items() []float64 {
 	return r.item
 }

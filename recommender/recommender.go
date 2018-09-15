@@ -124,25 +124,30 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	// 3. Sort the map by its value
 	// 4. Use the 5 champions with the highest count as a recommendation
 	if serendipitous {
-		sereOptions := make([]int, len(recommendations[0].Items()))
-		for _, dist := range distancesFromUser[nbr.neighbors : nbr.neighbors*2] {
-			for j := range dist.Items() {
-				sereOptions[j]++
+		sereOptions := make([]float64, len(recommendations[0].Items()))
+		for _, reco := range distancesFromUser[nbr.neighbors:int(math.Min(float64(nbr.neighbors*2), float64(len(nbr.data))))] {
+			//log.Infof("i: %v", int(math.Min(float64(nbr.neighbors*2), float64(len(nbr.data)))))
+			for j, item := range reco.Items() {
+				log.Infof("j: %v", j)
+				sereOptions[j] += item
 			}
 		}
-		/*sereOptions := make([]int, len(nbr.data))
-		for _, dist := range distancesFromUser[n : n*2] {
-			for j := range dist.items {
-				sereOptions[j]++
-			}
+		log.Printf("sereOptions: %v", sereOptions)
+		s := NewFloat64Slice(sereOptions...)
+		sort.Sort(sort.Reverse(s))
+		log.Printf("sereOptions (sorted): %v", s.idx)
+		serendipitousRecommendation := make([]float64, len(recommendations[0].Items()))
+		// 5 because we are interested in the top 5 champions
+		for _, val := range s.idx[0:5] {
+			serendipitousRecommendation[val] = 1
 		}
-		//log.Printf("sereOptions: %v", len(sereOptions))
-		s := NewIntSlice(sereOptions)
-		sort.Sort(s)
-		//log.Printf("sere: %v", s.idx[1:5])*/
-	}
 
-	if intercept {
+		recommendations = append(recommendations, SerendipitousRecommendation{
+			item:     serendipitousRecommendation,
+			distance: distanceMeasure,
+		})
+
+	} else if intercept { // serendipitous and intercept modes recommendations are mutually exclusive
 		intercepts := recommendations[0].Items()
 		for _, val := range recommendations[1:len(recommendations)] {
 			intercepts, err = vectormath.SetIntercept(intercepts, val.Items())
@@ -159,15 +164,25 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		}
 
 	}
+
 	return recommendations, nil
 }
 
+func NewFloat64Slice(n ...float64) *Slice { return NewSlice(sort.Float64Slice(n)) }
+
 func NewSlice(n sort.Interface) *Slice {
-	s := &Slice{Interface: n, idx: make([]int, n.Len())}
+	s := &Slice{
+		Interface: n,
+		idx:       make([]int, n.Len()),
+	}
+
 	for i := range s.idx {
 		s.idx[i] = i
 	}
 	return s
 }
 
-func NewIntSlice(n []int) *Slice { return NewSlice(sort.IntSlice(n)) }
+func (s Slice) Swap(i, j int) {
+	s.Interface.Swap(i, j)
+	s.idx[i], s.idx[j] = s.idx[j], s.idx[i]
+}

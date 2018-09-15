@@ -17,10 +17,11 @@ func main() {
 		[]float64{1.0, 1.0, 0.0, 0.0, 1.0, 0.0},
 		//[]float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 		[]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
+		[]float64{0.0, 1.0, 0.0, 0.0, 1.0, 0.0},
 	}
 
-	reco := recommender.NewNeighborhoodBasedRecommender(data, 1)
-	recommendations, err := reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1, vm.Pearson, false, false, false)
+	reco := recommender.NewNeighborhoodBasedRecommender(data, 2)
+	recommendations, err := reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1, vm.Pearson, false, false, true)
 	if err != nil {
 		log.Fatalf("Error while recommending: %v", err)
 		return
