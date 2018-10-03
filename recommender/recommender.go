@@ -18,7 +18,7 @@ type NeighborhoodBasedRecommender struct {
 	numberItems int
 }
 
-type Slice struct {
+type slice struct {
 	sort.Interface
 	idx []int
 }
@@ -119,21 +119,18 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 
 	// The idea here is the following:
 	// 1. Get the n:n*2 neighbors
-	// 2. Build a map where the keys are the champions found on those neighbors
-	//    and value is the count of them.
-	// 3. Sort the map by its value
-	// 4. Use the 5 champions with the highest count as a recommendation
+	// 2. Build a frequency array with the count of each champion
+	// 3. Sort the array (descending order), and get indices
+	// 4. Use the first 5 indices as a recommendation
 	if serendipitous {
 		sereOptions := make([]float64, len(recommendations[0].Items()))
 		for _, reco := range distancesFromUser[nbr.neighbors:int(math.Min(float64(nbr.neighbors*2), float64(len(nbr.data))))] {
-			//log.Infof("i: %v", int(math.Min(float64(nbr.neighbors*2), float64(len(nbr.data)))))
 			for j, item := range reco.Items() {
-				log.Infof("j: %v", j)
 				sereOptions[j] += item
 			}
 		}
 		log.Printf("sereOptions: %v", sereOptions)
-		s := NewFloat64Slice(sereOptions...)
+		s := newFloat64Slice(sereOptions...)
 		sort.Sort(sort.Reverse(s))
 		log.Printf("sereOptions (sorted): %v", s.idx)
 		serendipitousRecommendation := make([]float64, len(recommendations[0].Items()))
@@ -147,7 +144,8 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 			distance: distanceMeasure,
 		})
 
-	} else if intercept { // serendipitous and intercept modes recommendations are mutually exclusive
+	}
+	if intercept { // serendipitous and intercept modes recommendations are mutually exclusive
 		intercepts := recommendations[0].Items()
 		for _, val := range recommendations[1:len(recommendations)] {
 			intercepts, err = vectormath.SetIntercept(intercepts, val.Items())
@@ -168,10 +166,10 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	return recommendations, nil
 }
 
-func NewFloat64Slice(n ...float64) *Slice { return NewSlice(sort.Float64Slice(n)) }
+func newFloat64Slice(n ...float64) *slice { return newSlice(sort.Float64Slice(n)) }
 
-func NewSlice(n sort.Interface) *Slice {
-	s := &Slice{
+func newSlice(n sort.Interface) *slice {
+	s := &slice{
 		Interface: n,
 		idx:       make([]int, n.Len()),
 	}
@@ -182,7 +180,7 @@ func NewSlice(n sort.Interface) *Slice {
 	return s
 }
 
-func (s Slice) Swap(i, j int) {
+func (s slice) swap(i, j int) {
 	s.Interface.Swap(i, j)
 	s.idx[i], s.idx[j] = s.idx[j], s.idx[i]
 }
