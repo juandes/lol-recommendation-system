@@ -15,6 +15,7 @@ func main() {
 	data := [][]float64{
 		[]float64{1.0, 1.0, 1.0, 0.0, 1.0, 0.0},
 		[]float64{1.0, 1.0, 0.0, 0.0, 1.0, 0.0},
+		// Arrays of only 0's causes weird behaviour, do not use them :)
 		//[]float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 		[]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
 		[]float64{0.0, 1.0, 0.0, 0.0, 1.0, 0.0},

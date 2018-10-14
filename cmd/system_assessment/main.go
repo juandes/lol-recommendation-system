@@ -41,7 +41,7 @@ func main() {
 		total++
 
 		t = time.Now()
-		recommendations, err := reco.Recommend(val, 1, vm.Pearson, true, false)
+		recommendations, err := reco.Recommend(val, 1, vm.Pearson, false, true, false)
 		tSince = time.Since(t).Seconds()
 		if err != nil {
 			log.Fatalf("Error while recommending: %v", err)
@@ -51,7 +51,7 @@ func main() {
 		// These values had to be changed to string, because Golang's csv library deals only with string
 		//result = append(result, string(total))
 		// Append the distance score
-		result = append(result, strconv.FormatFloat(recommendations[0].DistanceScore(), 'f', 16, 64))
+		result = append(result, strconv.FormatFloat(recommendations[0].Distance(), 'f', 16, 64))
 		// Append the time it took to perform the prediction
 		result = append(result, strconv.FormatFloat(tSince, 'f', 6, 64))
 		/* In the testing set, each 4 rows represent one team, where the first row is the team with
@@ -71,7 +71,7 @@ func main() {
 		}
 	}
 
-	file, err := os.Create("data/assessment_01Pearson_Shuffle.csv")
+	file, err := os.Create("data/assessment_02Pearson_Shuffle.csv")
 	if err != nil {
 		log.Fatalf("Unable to create file: %v", err)
 	}

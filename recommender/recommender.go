@@ -8,8 +8,8 @@ import (
 	"sort"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	vm "github.com/juandes/knn-recommender-system/vectormath"
+	log "github.com/sirupsen/logrus"
 )
 
 type NeighborhoodBasedRecommender struct {
