@@ -12,6 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// NeighborhoodBasedRecommender is a recommender system implemented using k-nearest neighbors
 type NeighborhoodBasedRecommender struct {
 	data        [][]float64
 	neighbors   int
@@ -56,7 +57,7 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		order             []int
 	)
 
-	// order is an array where the values are
+	// Order is an array where the values are
 	// 1 ...n where n is the number of rows
 	// in the training dataset.
 	// It is the equivalent of Python's range(len(nbr.data))
@@ -65,7 +66,7 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		order[i] = i
 	}
 
-	// the point of shuffling the order in which
+	// The point of shuffling the order in which
 	// the distances will be calculated
 	// is to avoid having always the same
 	// predictions in case all the n results
@@ -75,6 +76,8 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		rand.Shuffle(len(order), func(i, j int) { order[i], order[j] = order[j], order[i] })
 	}
 
+	// This loop iterates over each item of the training set and calculates
+	// the distance between the ith element and the given vector
 	for i, val := range order {
 		user := nbr.data[val]
 		if len(user) != nbr.numberItems {
@@ -111,15 +114,16 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		})
 	}
 
-	// sort the recommendations (ascending order) by distance from the given vector
+	// Sort the recommendations (ascending order) by distance
 	sort.Slice(distancesFromUser, func(i, j int) bool {
 		return distancesFromUser[i].Distance() < distancesFromUser[j].Distance()
 	})
+	// Get the first k recommendation
 	recommendations = distancesFromUser[:nbr.neighbors]
 
 	// The idea here is the following:
 	// 1. Get the n:n*2 neighbors
-	// 2. Build a frequency array with the count of each champion
+	// 2. Build a frequency array with the count of each item
 	// 3. Sort the array (descending order), and get indices
 	// 4. Use the first 5 indices as a recommendation
 	if serendipitous {
@@ -129,12 +133,10 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 				sereOptions[j] += item
 			}
 		}
-		log.Printf("sereOptions: %v", sereOptions)
 		s := newFloat64Slice(sereOptions...)
 		sort.Sort(sort.Reverse(s))
-		log.Printf("sereOptions (sorted): %v", s.idx)
 		serendipitousRecommendation := make([]float64, len(recommendations[0].Items()))
-		// 5 because we are interested in the top 5 champions
+		// 5 because we are interested in the top 5 items
 		for _, val := range s.idx[0:5] {
 			serendipitousRecommendation[val] = 1
 		}
@@ -145,17 +147,20 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		})
 
 	}
-	if intercept { // serendipitous and intercept modes recommendations are mutually exclusive
+
+	// If intercept is true, we will calculate the intercept of all the recommendations.
+	// This will result in a single recommendation.
+	if intercept {
 		intercepts := recommendations[0].Items()
 		for _, val := range recommendations[1:len(recommendations)] {
-			intercepts, err = vectormath.SetIntercept(intercepts, val.Items())
+			intercepts, err = vectormath.Intercept(intercepts, val.Items())
 			if err != nil {
 				return nil, fmt.Errorf("Error calculating set intercept: %v", err)
 			}
 		}
 
 		recommendations = []Recommendation{
-			&SimpleRecommendation{
+			&SingleRecommendation{
 				item:     intercepts,
 				distance: distanceMeasure,
 			},

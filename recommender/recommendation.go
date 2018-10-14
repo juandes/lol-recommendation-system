@@ -19,7 +19,7 @@ type MultipleRecommendation struct {
 	distance vm.Distance
 }
 
-type SimpleRecommendation struct {
+type SingleRecommendation struct {
 	item     []float64
 	distance vm.Distance
 }
@@ -41,15 +41,15 @@ func (r MultipleRecommendation) Items() []float64 {
 	return r.items
 }
 
-func (r SimpleRecommendation) String() string {
+func (r SingleRecommendation) String() string {
 	return fmt.Sprintf("Items: %v\nDistance used: %v\n", r.item, r.distance)
 }
 
-func (r SimpleRecommendation) Distance() float64 {
+func (r SingleRecommendation) Distance() float64 {
 	return 0.0
 }
 
-func (r SimpleRecommendation) Items() []float64 {
+func (r SingleRecommendation) Items() []float64 {
 	return r.item
 }
 

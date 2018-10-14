@@ -17,7 +17,7 @@ func sum(a []float64, b []float64) ([]float64, error) {
 	return c, nil
 }
 
-func SetIntercept(a []float64, b []float64) ([]float64, error) {
+func Intercept(a []float64, b []float64) ([]float64, error) {
 	if len(a) != len(b) {
 		return nil, fmt.Errorf("Length mismatched; len(a)=%d, len(b)=%d", len(a), len(b))
 	}
