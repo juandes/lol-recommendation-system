@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/juandes/knn-recommender-system/data"
 	"github.com/juandes/knn-recommender-system/recommender"
 	vm "github.com/juandes/knn-recommender-system/vectormath"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -41,7 +41,7 @@ func main() {
 		total++
 
 		t = time.Now()
-		recommendations, err := reco.Recommend(val, 1, vm.Pearson, false, true, false)
+		recommendations, err := reco.Recommend(val, vm.Pearson, false, true, false)
 		tSince = time.Since(t).Seconds()
 		if err != nil {
 			log.Fatalf("Error while recommending: %v", err)

@@ -36,7 +36,7 @@ func main() {
 	log.Infof("Time (nanoseconds) building model: %f", tSince)
 
 	t = time.Now()
-	recommendations, err := reco.Recommend(v, 3, vm.Pearson, false, true, false)
+	recommendations, err := reco.Recommend(v, vm.Pearson, false, true, false)
 	if err != nil {
 		log.Fatalf("Error while recommending: %v", err)
 	}

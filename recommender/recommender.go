@@ -37,7 +37,7 @@ func NewNeighborhoodBasedRecommender(data [][]float64, k int) *NeighborhoodBased
 }
 
 // Recommend recommends the n number of items that are closer to a given vector using a given distance measure
-func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, numItemsToRecommend int, distanceMeasure vm.Distance, intercept, shuffle, serendipitous bool) ([]Recommendation, error) {
+func (nbr *NeighborhoodBasedRecommender) Recommend(items []float64, distanceMeasure vm.Distance, intercept, shuffle, serendipitous bool) ([]Recommendation, error) {
 	// TODO (Juan): If vector is a zero vector, it should return
 	recommendations, err := nbr.findKNearestNeighbors(items, distanceMeasure, intercept, shuffle, serendipitous)
 	if err != nil {
