@@ -41,7 +41,7 @@ func main() {
 	log.Info("Starting recommendation service...")
 
 	// create the recommender engine with k = 10
-	engine := recommender.NewNeighborhoodBasedRecommender(train, 10)
+	engine := recommender.NewNeighborhoodBasedRecommender(train, 1)
 
 	mux := http.NewServeMux()
 
@@ -103,6 +103,5 @@ func recommendationHandler(engine *recommender.NeighborhoodBasedRecommender) htt
 		for _, recommendation := range recommendation {
 			fmt.Println(recommendation.String())
 		}
-		//log.Infof("Reco: %v", reco)
 	})
 }

@@ -31,12 +31,12 @@ func main() {
 	}
 
 	t = time.Now()
-	reco := recommender.NewNeighborhoodBasedRecommender(data, 5)
+	reco := recommender.NewNeighborhoodBasedRecommender(data, 1)
 	tSince = time.Since(t).Seconds()
 	log.Infof("Time (nanoseconds) building model: %f", tSince)
 
 	t = time.Now()
-	recommendations, err := reco.Recommend(v, vm.Pearson, false, true, false)
+	recommendations, err := reco.Recommend(v, vm.Pearson, true, true, false)
 	if err != nil {
 		log.Fatalf("Error while recommending: %v", err)
 	}
@@ -44,7 +44,6 @@ func main() {
 	tSince = time.Since(t).Seconds()
 	log.Infof("Time (nanoseconds) recommending: %f", tSince)
 
-	fmt.Printf("Recommendation for vector: %v\n", v)
 	for _, recommendation := range recommendations {
 		fmt.Println(recommendation.String())
 	}

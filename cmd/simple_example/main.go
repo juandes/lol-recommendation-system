@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/juandes/knn-recommender-system/recommender"
 	vm "github.com/juandes/knn-recommender-system/vectormath"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 	}
 
 	reco := recommender.NewNeighborhoodBasedRecommender(data, 2)
-	recommendations, err := reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 1, vm.Pearson, false, false, true)
+	recommendations, err := reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, vm.Pearson, false, false, true)
 	if err != nil {
 		log.Fatalf("Error while recommending: %v", err)
 		return
@@ -34,7 +34,7 @@ func main() {
 		fmt.Printf(recommendation.String())
 	}
 
-	recommendations, err = reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, 4, vm.Pearson, true, false, false)
+	recommendations, err = reco.Recommend([]float64{0.0, 0.0, 0.0, 0.0, 1.0, 0.0}, vm.Pearson, true, false, false)
 	if err != nil {
 		log.Fatalf("Error while recommending: %v", err)
 		return
