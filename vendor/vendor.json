@@ -15,12 +15,6 @@
 			"revisionTime": "2017-06-12T11:18:26Z"
 		},
 		{
-			"checksumSHA1": "dbumT8FTwKpuQZeVN9wbyN0Oh+Y=",
-			"path": "github.com/juliangruber/go-intersect",
-			"revision": "b60b3a5b35ade098834e63cf9e094108650641a2",
-			"revisionTime": "2014-07-29T10:57:34Z"
-		},
-		{
 			"checksumSHA1": "cl9bdp4vvusDqC44P6NOtMK5tIU=",
 			"path": "github.com/konsorten/go-windows-terminal-sequences",
 			"revision": "b729f2633dfe35f4d1d8a32385f6685610ce1cb5",
