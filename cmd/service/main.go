@@ -22,41 +22,42 @@ type PredictionInput struct {
 	Serendipity bool     `json:"serendipity"`
 }
 
+// Output is the return response that holds the recommendations
+type Output struct {
+	Recommendations []recommender.Recommendation `json:"recommendations"`
+}
+
+// TODO (Juan): add an error structure. See this: https://blog.restcase.com/rest-api-error-codes-101/
+
 // curl -d '{"key1":"value1", "key2":"value2"}' -H "Content-Type: application/json" -X POST http://localhost:8080/recommend
 // curl -d '{"champions":["jax"], "intercept": true}' -H "Content-Type: application/json" -X POST http://localhost:8080/recommend
 
 func main() {
+	// load the file with the mapping of champions name to index position
 	file, err := ioutil.ReadFile("../../data/champions_key.json")
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error reading champions file: %v", err)
 	}
 	err = json.Unmarshal(file, &champions)
 
 	// read the training set
 	train, _, err := data.ReadData("../../data/winning_teams.csv")
 	if err != nil {
-		log.Fatalf("Error reading data: %v", err)
+		log.Fatalf("Error reading training set: %v", err)
 	}
 
 	log.Info("Starting recommendation service...")
 
 	// create the recommender engine with k = 10
-	engine := recommender.NewNeighborhoodBasedRecommender(train, 1)
+	engine := recommender.NewNeighborhoodBasedRecommender(train, 5)
 
 	mux := http.NewServeMux()
-
-	// endpoints
-	mux.HandleFunc("/", handler)
 	mux.HandleFunc("/healthz", func(res http.ResponseWriter, _ *http.Request) {
 		res.WriteHeader(http.StatusOK)
 	})
 	mux.HandleFunc("/recommend", recommendationHandler(engine))
 
 	go log.Fatal(http.ListenAndServe(":8080", mux))
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
 func recommendationHandler(engine *recommender.NeighborhoodBasedRecommender) http.HandlerFunc {
@@ -77,31 +78,30 @@ func recommendationHandler(engine *recommender.NeighborhoodBasedRecommender) htt
 		err = json.Unmarshal(body, &pinput)
 		if err != nil {
 			log.Errorf("Error unmarshaling: %v", err)
+			return
 		}
 
+		// create the feature vector by adding 1
+		// in the index corresponding to the champion
 		for _, val := range pinput.Champions {
-			log.Infof("val: %v", val)
 			item, ok := champions[val]
 			if !ok {
 				log.Warningf("Unknown champion: %v", val)
 				return
 			}
 			championIdx, _ := strconv.Atoi(item)
-			log.Infof("ChampionIdx: %v", championIdx)
 			input[championIdx] = 1
-			log.Infof("championIdx: %v", championIdx)
 		}
 
-		//log.Infof("Body: %v", string(body))
-
-		recommendation, err := engine.Recommend(input, vectormath.Pearson, pinput.Intercept, pinput.Shuffle, pinput.Serendipity)
+		recommendations, err := engine.Recommend(input, vectormath.Pearson, pinput.Intercept, pinput.Shuffle, pinput.Serendipity)
 		if err != nil {
 			log.Errorf("Error predicting recommendation: %v", err)
 			return
 		}
 
-		for _, recommendation := range recommendation {
-			fmt.Println(recommendation.String())
-		}
+		response, _ := json.Marshal(&Output{
+			Recommendations: recommendations,
+		})
+		fmt.Fprintln(w, string(response))
 	})
 }

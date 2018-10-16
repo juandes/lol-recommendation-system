@@ -107,16 +107,16 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		}
 
 		distancesFromUser = append(distancesFromUser, MultipleRecommendation{
-			index:    i,
-			items:    user,
-			d:        d,
-			distance: distanceMeasure,
+			Index:           i,
+			Recommendation:  user,
+			Distance:        d,
+			DistanceMeasure: distanceMeasure,
 		})
 	}
 
 	// Sort the recommendations (ascending order) by distance
 	sort.Slice(distancesFromUser, func(i, j int) bool {
-		return distancesFromUser[i].Distance() < distancesFromUser[j].Distance()
+		return distancesFromUser[i].GetDistance() < distancesFromUser[j].GetDistance()
 	})
 	// Get the first k recommendation
 	recommendations = distancesFromUser[:nbr.neighbors]
@@ -127,23 +127,23 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	// 3. Sort the array (descending order), and get indices
 	// 4. Use the first 5 indices as a recommendation
 	if serendipitous {
-		sereOptions := make([]float64, len(recommendations[0].Items()))
+		sereOptions := make([]float64, len(recommendations[0].GetRecommendation()))
 		for _, reco := range distancesFromUser[nbr.neighbors:int(math.Min(float64(nbr.neighbors*2), float64(len(nbr.data))))] {
-			for j, item := range reco.Items() {
+			for j, item := range reco.GetRecommendation() {
 				sereOptions[j] += item
 			}
 		}
 		s := newFloat64Slice(sereOptions...)
 		sort.Sort(sort.Reverse(s))
-		serendipitousRecommendation := make([]float64, len(recommendations[0].Items()))
+		serendipitousRecommendation := make([]float64, len(recommendations[0].GetRecommendation()))
 		// 5 because we are interested in the top 5 items
 		for _, val := range s.idx[0:5] {
 			serendipitousRecommendation[val] = 1
 		}
 
 		recommendations = append(recommendations, SerendipitousRecommendation{
-			item:     serendipitousRecommendation,
-			distance: distanceMeasure,
+			Recommendation: serendipitousRecommendation,
+			Distance:       distanceMeasure,
 		})
 
 	}
@@ -151,9 +151,9 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	// If intercept is true, we will calculate the intercept of all the recommendations.
 	// This will result in a single recommendation.
 	if intercept {
-		intercepts := recommendations[0].Items()
+		intercepts := recommendations[0].GetRecommendation()
 		for _, val := range recommendations[1:len(recommendations)] {
-			intercepts, err = vectormath.Intercept(intercepts, val.Items())
+			intercepts, err = vectormath.Intercept(intercepts, val.GetRecommendation())
 			if err != nil {
 				return nil, fmt.Errorf("Error calculating set intercept: %v", err)
 			}
@@ -161,8 +161,8 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 
 		recommendations = []Recommendation{
 			&SingleRecommendation{
-				item:     intercepts,
-				distance: distanceMeasure,
+				Recommendation: intercepts,
+				Distance:       distanceMeasure,
 			},
 		}
 

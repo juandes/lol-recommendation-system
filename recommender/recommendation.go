@@ -8,59 +8,59 @@ import (
 
 type Recommendation interface {
 	String() string
-	Distance() float64
-	Items() []float64
+	GetDistance() float64
+	GetRecommendation() []float64
 }
 
 type MultipleRecommendation struct {
-	index    int
-	items    []float64
-	d        float64
-	distance vm.Distance
+	Index           int         `json:"-"`
+	Recommendation  []float64   `json:"recommendation"`
+	Distance        float64     `json:"distance"`
+	DistanceMeasure vm.Distance `json:"-"`
 }
 
 type SingleRecommendation struct {
-	item     []float64
-	distance vm.Distance
+	Recommendation []float64
+	Distance       vm.Distance
 }
 
 type SerendipitousRecommendation struct {
-	item     []float64
-	distance vm.Distance
+	Recommendation []float64
+	Distance       vm.Distance
 }
 
 func (r MultipleRecommendation) String() string {
-	return fmt.Sprintf("Items: %v\nIndex: %d\nDistance (%v): %f\n", r.items, r.index, r.distance, r.d)
+	return fmt.Sprintf("Items: %v\nIndex: %d\nDistance (%v): %f\n", r.Recommendation, r.Index, r.DistanceMeasure, r.Distance)
 }
 
-func (r MultipleRecommendation) Distance() float64 {
-	return r.d
+func (r MultipleRecommendation) GetDistance() float64 {
+	return r.Distance
 }
 
-func (r MultipleRecommendation) Items() []float64 {
-	return r.items
+func (r MultipleRecommendation) GetRecommendation() []float64 {
+	return r.Recommendation
 }
 
 func (r SingleRecommendation) String() string {
-	return fmt.Sprintf("Items: %v\nDistance used: %v\n", r.item, r.distance)
+	return fmt.Sprintf("Items: %v\nDistance used: %v\n", r.Recommendation, r.Distance)
 }
 
-func (r SingleRecommendation) Distance() float64 {
+func (r SingleRecommendation) GetDistance() float64 {
 	return 0.0
 }
 
-func (r SingleRecommendation) Items() []float64 {
-	return r.item
+func (r SingleRecommendation) GetRecommendation() []float64 {
+	return r.Recommendation
 }
 
 func (r SerendipitousRecommendation) String() string {
-	return fmt.Sprintf("Serendipitous recommendation items: %v\nDistance used: %v\n", r.item, r.distance)
+	return fmt.Sprintf("Serendipitous recommendation items: %v\nDistance used: %v\n", r.Recommendation, r.Distance)
 }
 
-func (r SerendipitousRecommendation) Distance() float64 {
+func (r SerendipitousRecommendation) GetDistance() float64 {
 	return 0.0
 }
 
-func (r SerendipitousRecommendation) Items() []float64 {
-	return r.item
+func (r SerendipitousRecommendation) GetRecommendation() []float64 {
+	return r.Recommendation
 }
