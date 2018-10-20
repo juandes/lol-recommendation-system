@@ -9,10 +9,34 @@
 			"revisionTime": "2018-03-29T18:20:55Z"
 		},
 		{
+			"checksumSHA1": "5rPfda8jFccr3A6heL+JAmi9K9g=",
+			"path": "github.com/davecgh/go-spew/spew",
+			"revision": "5215b55f46b2b919f50a1df0eaa5886afe4e3b3d",
+			"revisionTime": "2015-11-05T21:09:06Z"
+		},
+		{
 			"checksumSHA1": "W3RxbO61jG2gr4fLrbAy60FOR1s=",
 			"path": "github.com/dgryski/go-onlinestats",
 			"revision": "1c7d1946876822b4a3a4b11b598e3aad1d05265e",
 			"revisionTime": "2017-06-12T11:18:26Z"
+		},
+		{
+			"checksumSHA1": "DSKGn08DPp1+9p1xdwoVQY0IuV4=",
+			"path": "github.com/facebookgo/ensure",
+			"revision": "b4ab57deab51ee655ae4bd85281f0715a068016d",
+			"revisionTime": "2016-01-27T19:34:07Z"
+		},
+		{
+			"checksumSHA1": "R7YqZ9k/RtXzCqV9cPMmsfe4oX8=",
+			"path": "github.com/facebookgo/stack",
+			"revision": "751773369052141c013c6e827a71e8f35c07879c",
+			"revisionTime": "2016-02-09T18:44:15Z"
+		},
+		{
+			"checksumSHA1": "Wk4dPOjYwppJZJU5XXe5RZL6Mjc=",
+			"path": "github.com/facebookgo/subset",
+			"revision": "8dac2c3c48703541e481feddf22975953d4ff842",
+			"revisionTime": "2015-06-12T18:29:17Z"
 		},
 		{
 			"checksumSHA1": "cl9bdp4vvusDqC44P6NOtMK5tIU=",
