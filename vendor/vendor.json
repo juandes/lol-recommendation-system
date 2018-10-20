@@ -51,6 +51,12 @@
 			"revisionTime": "2018-09-30T20:58:21Z"
 		},
 		{
+			"checksumSHA1": "fKq6NiaqP3DFxnCRF5mmpJWTSUA=",
+			"path": "github.com/spf13/pflag",
+			"revision": "4c012f6dcd9546820e378d0bdda4d8fc772cdfea",
+			"revisionTime": "2017-11-06T14:28:49Z"
+		},
+		{
 			"checksumSHA1": "yfEYjkP2xB8f09Wk3cYeeYg/9Jg=",
 			"path": "github.com/steakknife/hamming",
 			"revision": "5ac3f73b8842df21423978fbbeb5166670f6f73e",
