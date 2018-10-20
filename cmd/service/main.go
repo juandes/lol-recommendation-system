@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	championsFile = pflag.String("champions mapping", "../../data/champions_key.json", "path to file containing the champions mapping")
-	trainingData  = pflag.String("training data", "../../data/winning_teams.csv", "path to training dataset")
+	championsFile = pflag.String("championsmapping", "../../data/champions_key.json", "path to file containing the champions mapping")
+	trainingData  = pflag.String("trainingset", "../../data/winning_teams.csv", "path to training dataset")
 	champions     map[string]string
 )
 
@@ -38,6 +38,7 @@ type Output struct {
 // curl -d '{"champions":["jax"], "intercept": true}' -H "Content-Type: application/json" -X POST http://localhost:8080/recommend
 
 func main() {
+	pflag.Parse()
 	// load the file with the mapping of champions name to index position
 	file, err := ioutil.ReadFile(*championsFile)
 	if err != nil {
