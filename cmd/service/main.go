@@ -7,12 +7,17 @@ import (
 	"github.com/juandes/knn-recommender-system/recommender"
 	"github.com/juandes/knn-recommender-system/vectormath"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/pflag"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 )
 
-var champions map[string]string
+var (
+	championsFile = pflag.String("champions mapping", "../../data/champions_key.json", "path to file containing the champions mapping")
+	trainingData  = pflag.String("training data", "../../data/winning_teams.csv", "path to training dataset")
+	champions     map[string]string
+)
 
 // PredictionInput is the object to which the JSON obtain to predict, will be unmarshal to
 type PredictionInput struct {
@@ -34,14 +39,14 @@ type Output struct {
 
 func main() {
 	// load the file with the mapping of champions name to index position
-	file, err := ioutil.ReadFile("../../data/champions_key.json")
+	file, err := ioutil.ReadFile(*championsFile)
 	if err != nil {
 		log.Fatalf("Error reading champions file: %v", err)
 	}
 	err = json.Unmarshal(file, &champions)
 
 	// read the training set
-	train, _, err := data.ReadData("../../data/winning_teams.csv")
+	train, _, err := data.ReadData(*trainingData)
 	if err != nil {
 		log.Fatalf("Error reading training set: %v", err)
 	}
@@ -77,6 +82,7 @@ func recommendationHandler(engine *recommender.NeighborhoodBasedRecommender) htt
 		}
 		err = json.Unmarshal(body, &pinput)
 		if err != nil {
+			// TODO: Replace logs for http.Error
 			log.Errorf("Error unmarshaling: %v", err)
 			return
 		}

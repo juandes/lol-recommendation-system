@@ -51,7 +51,7 @@ func main() {
 		// These values had to be changed to string, because Golang's csv library deals only with string
 		//result = append(result, string(total))
 		// Append the distance score
-		result = append(result, strconv.FormatFloat(recommendations[0].Distance(), 'f', 16, 64))
+		result = append(result, strconv.FormatFloat(recommendations[0].GetDistance(), 'f', 16, 64))
 		// Append the time it took to perform the prediction
 		result = append(result, strconv.FormatFloat(tSince, 'f', 6, 64))
 		/* In the testing set, each 4 rows represent one team, where the first row is the team with

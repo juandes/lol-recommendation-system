@@ -20,13 +20,13 @@ type MultipleRecommendation struct {
 }
 
 type SingleRecommendation struct {
-	Recommendation []float64
-	Distance       vm.Distance
+	Recommendation []float64   `json:"recommendation"`
+	Distance       vm.Distance `json:"-"`
 }
 
 type SerendipitousRecommendation struct {
-	Recommendation []float64
-	Distance       vm.Distance
+	Recommendation []float64   `json:"recommendation"`
+	Distance       vm.Distance `json:"-"`
 }
 
 func (r MultipleRecommendation) String() string {
