@@ -142,8 +142,8 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 		}
 
 		recommendations = append(recommendations, SerendipitousRecommendation{
-			Recommendation: serendipitousRecommendation,
-			Distance:       distanceMeasure,
+			Recommendation:  serendipitousRecommendation,
+			DistanceMeasure: distanceMeasure,
 		})
 
 	}
@@ -161,8 +161,8 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 
 		recommendations = []Recommendation{
 			&SingleRecommendation{
-				Recommendation: intercepts,
-				Distance:       distanceMeasure,
+				Recommendation:  intercepts,
+				DistanceMeasure: distanceMeasure,
 			},
 		}
 

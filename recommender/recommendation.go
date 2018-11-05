@@ -20,13 +20,13 @@ type MultipleRecommendation struct {
 }
 
 type SingleRecommendation struct {
-	Recommendation []float64   `json:"recommendation"`
-	Distance       vm.Distance `json:"-"`
+	Recommendation  []float64   `json:"recommendation"`
+	DistanceMeasure vm.Distance `json:"-"`
 }
 
 type SerendipitousRecommendation struct {
-	Recommendation []float64   `json:"recommendation"`
-	Distance       vm.Distance `json:"-"`
+	Recommendation  []float64   `json:"recommendation"`
+	DistanceMeasure vm.Distance `json:"-"`
 }
 
 func (r MultipleRecommendation) String() string {
@@ -42,7 +42,7 @@ func (r MultipleRecommendation) GetRecommendation() []float64 {
 }
 
 func (r SingleRecommendation) String() string {
-	return fmt.Sprintf("Items: %v\nDistance used: %v\n", r.Recommendation, r.Distance)
+	return fmt.Sprintf("Items: %v\nDistance used: %v\n", r.Recommendation, r.DistanceMeasure)
 }
 
 func (r SingleRecommendation) GetDistance() float64 {
@@ -54,7 +54,7 @@ func (r SingleRecommendation) GetRecommendation() []float64 {
 }
 
 func (r SerendipitousRecommendation) String() string {
-	return fmt.Sprintf("Serendipitous recommendation items: %v\nDistance used: %v\n", r.Recommendation, r.Distance)
+	return fmt.Sprintf("Serendipitous recommendation items: %v\nDistance used: %v\n", r.Recommendation, r.DistanceMeasure)
 }
 
 func (r SerendipitousRecommendation) GetDistance() float64 {
