@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	trainingData = pflag.String("trainingset", "../../data/winning_teams.csv", "path to training dataset")
+	trainingData = pflag.String("trainingset", "../../static/winning_teams.csv", "path to training dataset")
 	// Had to read the PORT from an env variable because of Heroku
 	port = pflag.String("port", os.Getenv("PORT"), "listening port")
 
@@ -39,7 +39,7 @@ type Output struct {
 // TODO (Juan): add an error structure. See this: https://blog.restcase.com/rest-api-error-codes-101/
 
 // curl -d '{"key1":"value1", "key2":"value2"}' -H "Content-Type: application/json" -X POST http://localhost:8080/recommend
-// curl -d '{"champions":["jax"], "intercept": true}' -H "Content-Type: application/json" -X POST http://localhost:8080/recommend
+// curl -d '{"champions":["jax", "ashe", "drmundo"], "intercept": true, "shuffle": true}' -H "Content-Type: application/json" -X POST http://localhost:8080/recommend
 
 func main() {
 	pflag.Parse()

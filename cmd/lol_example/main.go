@@ -18,7 +18,7 @@ func main() {
 	// one hot encoding of the different items
 	// 1 means that the "user" has liked, bought, seen ...
 	// the item. 0 means the user has not seen the item.
-	data, _, err := data.ReadData("../../data/winning_teams.csv")
+	data, _, err := data.ReadData("../../static/winning_teams.csv")
 	if err != nil {
 		log.Fatalf("Error reading data: %v", err)
 	}

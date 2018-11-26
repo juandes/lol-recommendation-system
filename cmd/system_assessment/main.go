@@ -23,13 +23,13 @@ func main() {
 	)
 
 	// read the training set
-	train, _, err := data.ReadData("data/winning_teams.csv")
+	train, _, err := data.ReadData("static/winning_teams.csv")
 	if err != nil {
 		log.Fatalf("Error reading data: %v", err)
 	}
 
 	// load the testing set; the data that will be used to assess the system
-	test, _, err := data.ReadData("data/random_teams.csv")
+	test, _, err := data.ReadData("static/random_teams.csv")
 	if err != nil {
 		log.Fatalf("Error reading data: %v", err)
 	}
