@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/juandes/knn-recommender-system/data"
-	"github.com/juandes/knn-recommender-system/recommender"
-	vm "github.com/juandes/knn-recommender-system/vectormath"
+	"github.com/juandes/lol-recommendation-system/data"
+	"github.com/juandes/lol-recommendation-system/recommender"
+	vm "github.com/juandes/lol-recommendation-system/vectormath"
 	log "github.com/sirupsen/logrus"
 )
 

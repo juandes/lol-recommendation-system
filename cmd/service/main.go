@@ -3,15 +3,16 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/juandes/knn-recommender-system/data"
-	"github.com/juandes/knn-recommender-system/recommender"
-	"github.com/juandes/knn-recommender-system/vectormath"
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/pflag"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/juandes/lol-recommendation-system/data"
+	"github.com/juandes/lol-recommendation-system/recommender"
+	"github.com/juandes/lol-recommendation-system/vectormath"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/pflag"
 )
 
 var (
