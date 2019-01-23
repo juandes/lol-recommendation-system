@@ -2,13 +2,14 @@ package recommender
 
 import (
 	"fmt"
-	"github.com/juandes/knn-recommender-system/vectormath"
 	"math"
 	"math/rand"
 	"sort"
 	"time"
 
-	vm "github.com/juandes/knn-recommender-system/vectormath"
+	"github.com/juandes/lol-recommendation-system/vectormath"
+
+	vm "github.com/juandes/lol-recommendation-system/vectormath"
 	log "github.com/sirupsen/logrus"
 )
 

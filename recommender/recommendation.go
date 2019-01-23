@@ -3,7 +3,7 @@ package recommender
 import (
 	"fmt"
 
-	vm "github.com/juandes/knn-recommender-system/vectormath"
+	vm "github.com/juandes/lol-recommendation-system/vectormath"
 )
 
 type Recommendation interface {
