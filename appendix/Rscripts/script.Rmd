@@ -12,43 +12,19 @@ knitr::opts_knit$set(root.dir = "~/gocode/src/github.com/juandes/knn-recommender
 ```
 
 
-# Intercept champions
 ```{r}
-k_colnames <- c("input_champions", "output_champions")
-k_intercept_df <- data.frame(matrix(ncol=2, nrow = 0))
-colnames(k_intercept_df) <- k_colnames
-
-
-for (i in 2:10) {
-  data <- read_csv(sprintf("../intercept_test/%s", i), col_names = FALSE)
-  colnames(data) <- k_colnames
-  data$k <- rep(c(i), times = 40000)
-  k_intercept_df <- rbind(k_intercept_df, data)
-}
-
-k_intercept_df$k <- as.factor(k_intercept_df$k)
-
-k_intercept_df_summary <- k_intercept_df %>%
-  group_by(k, input_champions) %>%
-  summarise(median = median(output_champions), mean = mean(output_champions))
-
-
-ggplot(data=k_intercept_df_summary, aes(x = input_champions, y=mean)) +
-  geom_point() +
-  geom_line() +
-  expand_limits(x = 1, y = 0) + 
-  labs(x = "Number of selected champions in input vector", y = "Amount of champions in recommendation") +
-  ggtitle("Number of recommended champions depending on k while using intercept mode") +
-  facet_wrap(~k)
+prediction_time <- read.csv("../assessments/distance_time.csv", header=FALSE)
+prediction_time$V1 <- NULL
+colnames(prediction_time) <- c("time")
 ```
 
 ```{r}
-ggplot(data=k_intercept_df_summary, aes(x = input_champions, y=mean, color=k)) +
-  geom_point() +
-  geom_line() +
-  expand_limits(x = 1, y = 1) + 
-  labs(x = "Number of selected champions in input vector", y = "Length of recommendation") +
-  ggtitle("Number of recommended champions depending on k while using intercept mode")
+ggplot(prediction_time, aes(time)) +
+  geom_histogram(binwidth = 0.0001) +
+  xlab("Time (seconds)") +
+  ggtitle("Time (seconds) it took to perform each prediction")
 ```
+
+
 
 
