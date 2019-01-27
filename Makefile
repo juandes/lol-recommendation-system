@@ -17,4 +17,5 @@ run-docker:
 	docker run --expose 8080 -i -t ${IMAGE} bash
 
 run-service:
-	docker run -t -p 8080:8080 juandes/lol-champions-recommender
+	docker pull ${IMAGE}
+	docker run -t -p 8080:8080 ${IMAGE}
