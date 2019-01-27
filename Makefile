@@ -1,11 +1,11 @@
 BUILD        ?= $(CURDIR)/build/
 IMAGE 	:= juandes/lol-champions-recommender
 
-run-service-local:
-	go run cmd/service/main.go --trainingset=static/winning_teams.csv
-
 test:
 	GOPATH=$(GOPATH) go test ./...
+	
+run-service-local:
+	go run cmd/service/main.go --trainingset=static/winning_teams.csv
 
 go-build:
 	GOPATH=$(GOPATH) GOBIN=$(BUILD) go install  ./cmd/...
