@@ -98,6 +98,11 @@ func recommendationHandler(engine *recommender.NeighborhoodBasedRecommender) htt
 			return
 		}
 
+		if len(pinput.Champions) == 0 || len(pinput.Champions) > 4 {
+			log.Error("Invalid number of champions. Please provide 4 or less")
+			return
+		}
+
 		// create the feature vector by writing 1
 		// in the index corresponding to the champion
 		for _, val := range pinput.Champions {
@@ -118,8 +123,8 @@ func recommendationHandler(engine *recommender.NeighborhoodBasedRecommender) htt
 		allRecommendations := [][]string{}
 		for _, val := range recommendations {
 			recommendedItem := []string{}
-			for i, val2 := range val.GetRecommendation() {
-				if val2 != 1 {
+			for i, isRecommended := range val.GetRecommendation() {
+				if isRecommended != 1 {
 					continue
 				}
 				champ := indexToChampion[int(i)]
