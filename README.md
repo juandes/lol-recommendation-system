@@ -42,7 +42,8 @@ A valid request looks like this:
 
 The champions list have have at least one champion and four at most, and their names have to be written in lowercase and without any whitespace, e.g. _Jarvan IV_ has to be _jarvaniv_.
 
-
+## Contribution
+This system is a playground for testing and experimenting, is someone has a nice idea and would like to contribute, fix bugs or improving the system, I'd be super happy.
 
 ## Disclaimer
 I should mention that this engine is by no means perfect nor complete and that it is a proof of concept on how we could build recommendation systems for a video game. League of Legends and the champions selection component of the game involves more complex processes such as the banning of champions (champions that can't be used by any player), and the order in which each player selects its champion. These are processes that require a high level of expertise, something that can't be that easily automated or learned.
