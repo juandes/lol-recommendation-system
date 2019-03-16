@@ -7,8 +7,6 @@ import (
 	"sort"
 	"time"
 
-	"github.com/juandes/lol-recommendation-system/vectormath"
-
 	vm "github.com/juandes/lol-recommendation-system/vectormath"
 	log "github.com/sirupsen/logrus"
 )
@@ -154,7 +152,7 @@ func (nbr *NeighborhoodBasedRecommender) findKNearestNeighbors(items []float64, 
 	if intercept {
 		intercepts := recommendations[0].GetRecommendation()
 		for _, val := range recommendations[1:len(recommendations)] {
-			intercepts, err = vectormath.Intercept(intercepts, val.GetRecommendation())
+			intercepts, err = vm.Intercept(intercepts, val.GetRecommendation())
 			if err != nil {
 				return nil, fmt.Errorf("Error calculating set intercept: %v", err)
 			}
