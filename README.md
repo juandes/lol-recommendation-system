@@ -1,4 +1,4 @@
-# League of Legends Recommendation System
+# League of Legends Recommendation System [![GoDoc](https://godoc.org/github.com/juandes/lol-recommendation-system?status.svg)](https://godoc.org/github.com/juandes/lol-recommendation-system)
 ## Overview
 lol-recommendation-system, or **LoLReco** is recommender system built from scratch using Go for the game [League of Legends](https://na.leagueoflegends.com/) (LoL). LoL is a multiplayer online battle area game (MOBA) which features two teams made of five players each (in its default mode) competing against each other. In layman's terms, we could summarize the game's goal into the following sentence: each team has to reach the other team's hub (known as the Nexus) and destroy it before the opposing team slays yours. This task is not an easy one since each side has defensive structures, items, and minions that hinder every step you make. However, the real complexity of LoL lies in the fighters, or Champions as they called in game.
 
